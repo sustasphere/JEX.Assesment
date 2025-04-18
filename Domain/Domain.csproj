@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>13</LangVersion>
+    <RootNamespace>JEX.Assessment.Domain</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="V1\Behavior\Services\" />
+    <Folder Include="V1\Types\Messages\" />
+    <Folder Include="V1\Types\Requests\" />
+    <Folder Include="V1\Types\Responses\" />
+  </ItemGroup>
+
+</Project>
