@@ -11,6 +11,32 @@ namespace JEX.Assessment.API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "CompanyAddressSet",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FullAddress = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompanyAddressSet", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CompanyNameSet",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompanyNameSet", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CompanySet",
                 columns: table => new
                 {
@@ -41,20 +67,23 @@ namespace JEX.Assessment.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompanyAddressSet",
+                name: "CompanyAddressSetCompanySet",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FullAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    AddressesId = table.Column<int>(type: "int", nullable: false),
                     CompanySetId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompanyAddressSet", x => x.Id);
+                    table.PrimaryKey("PK_CompanyAddressSetCompanySet", x => new { x.AddressesId, x.CompanySetId });
                     table.ForeignKey(
-                        name: "FK_CompanyAddressSet_CompanySet_CompanySetId",
+                        name: "FK_CompanyAddressSetCompanySet_CompanyAddressSet_AddressesId",
+                        column: x => x.AddressesId,
+                        principalTable: "CompanyAddressSet",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CompanyAddressSetCompanySet_CompanySet_CompanySetId",
                         column: x => x.CompanySetId,
                         principalTable: "CompanySet",
                         principalColumn: "Id",
@@ -62,20 +91,23 @@ namespace JEX.Assessment.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompanyNameSet",
+                name: "CompanyNameSetCompanySet",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: false),
-                    CompanySetId = table.Column<int>(type: "int", nullable: false)
+                    CompanySetId = table.Column<int>(type: "int", nullable: false),
+                    NamesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompanyNameSet", x => x.Id);
+                    table.PrimaryKey("PK_CompanyNameSetCompanySet", x => new { x.CompanySetId, x.NamesId });
                     table.ForeignKey(
-                        name: "FK_CompanyNameSet_CompanySet_CompanySetId",
+                        name: "FK_CompanyNameSetCompanySet_CompanyNameSet_NamesId",
+                        column: x => x.NamesId,
+                        principalTable: "CompanyNameSet",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CompanyNameSetCompanySet_CompanySet_CompanySetId",
                         column: x => x.CompanySetId,
                         principalTable: "CompanySet",
                         principalColumn: "Id",
@@ -83,27 +115,33 @@ namespace JEX.Assessment.API.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompanyAddressSet_CompanySetId",
-                table: "CompanyAddressSet",
+                name: "IX_CompanyAddressSetCompanySet_CompanySetId",
+                table: "CompanyAddressSetCompanySet",
                 column: "CompanySetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompanyNameSet_CompanySetId",
-                table: "CompanyNameSet",
-                column: "CompanySetId");
+                name: "IX_CompanyNameSetCompanySet_NamesId",
+                table: "CompanyNameSetCompanySet",
+                column: "NamesId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "CompanyAddressSetCompanySet");
+
+            migrationBuilder.DropTable(
+                name: "CompanyNameSetCompanySet");
+
+            migrationBuilder.DropTable(
+                name: "VacancySet");
+
+            migrationBuilder.DropTable(
                 name: "CompanyAddressSet");
 
             migrationBuilder.DropTable(
                 name: "CompanyNameSet");
-
-            migrationBuilder.DropTable(
-                name: "VacancySet");
 
             migrationBuilder.DropTable(
                 name: "CompanySet");

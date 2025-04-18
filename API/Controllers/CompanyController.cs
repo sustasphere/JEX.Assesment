@@ -60,13 +60,16 @@ public class CompanyController( IRequestClient<GenerateCompany> client, ApiConte
     [ProducesResponseType<ProblemDetails>( StatusCodes.Status400BadRequest, "application/problem+json" )]
     public async Task<IActionResult> SaveAsync( [FromBody] SaveCompanyRequest request )
     {
-        dbCtx.Add( new CompanySet() {
+        var fullName = request.Names.Any() ? request.Names.First().FullName : string.Empty;
+        var fullAddress = request.Addresses.Any() ? request.Addresses.First().FullAddress : string.Empty;
+        var set = new CompanySet() {
             CompanyGuid = request.CompanyId.ToString(),
             // ToDo: implement proper company-name mapping
-            Names = [ new() { FullName = request.Names.First().FullName } ],
+            Names = new List<CompanyNameSet> { new() { FullName = fullName } },
             // ToDo: implement proper company-address mapping
-            Addresses = [ new() { FullAddress = request.Addresses.First().FullAddress } ]
-        } );
+            Addresses = new List<CompanyAddressSet> { new() { FullAddress = fullAddress } }
+        };
+        dbCtx.Add( set );
         _ = await dbCtx.SaveChangesAsync();
         return Created();
     }

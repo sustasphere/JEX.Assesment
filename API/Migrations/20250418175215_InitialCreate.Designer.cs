@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JEX.Assessment.API.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20250418143002_InitialCreate")]
+    [Migration("20250418175215_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,6 +24,36 @@ namespace JEX.Assessment.API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CompanyAddressSetCompanySet", b =>
+                {
+                    b.Property<int>("AddressesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompanySetId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AddressesId", "CompanySetId");
+
+                    b.HasIndex("CompanySetId");
+
+                    b.ToTable("CompanyAddressSetCompanySet");
+                });
+
+            modelBuilder.Entity("CompanyNameSetCompanySet", b =>
+                {
+                    b.Property<int>("CompanySetId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NamesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CompanySetId", "NamesId");
+
+                    b.HasIndex("NamesId");
+
+                    b.ToTable("CompanyNameSetCompanySet");
+                });
+
             modelBuilder.Entity("JEX.Assessment.Persistence.V1.Types.Sets.CompanyAddressSet", b =>
                 {
                     b.Property<int>("Id")
@@ -32,19 +62,11 @@ namespace JEX.Assessment.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CompanySetId")
-                        .HasColumnType("int");
-
                     b.Property<string>("FullAddress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompanySetId");
 
                     b.ToTable("CompanyAddressSet");
                 });
@@ -57,19 +79,11 @@ namespace JEX.Assessment.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CompanySetId")
-                        .HasColumnType("int");
-
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompanySetId");
 
                     b.ToTable("CompanyNameSet");
                 });
@@ -123,33 +137,34 @@ namespace JEX.Assessment.API.Migrations
                     b.ToTable("VacancySet");
                 });
 
-            modelBuilder.Entity("JEX.Assessment.Persistence.V1.Types.Sets.CompanyAddressSet", b =>
+            modelBuilder.Entity("CompanyAddressSetCompanySet", b =>
                 {
-                    b.HasOne("JEX.Assessment.Persistence.V1.Types.Sets.CompanySet", "CompanySet")
-                        .WithMany("Addresses")
+                    b.HasOne("JEX.Assessment.Persistence.V1.Types.Sets.CompanyAddressSet", null)
+                        .WithMany()
+                        .HasForeignKey("AddressesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JEX.Assessment.Persistence.V1.Types.Sets.CompanySet", null)
+                        .WithMany()
+                        .HasForeignKey("CompanySetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CompanyNameSetCompanySet", b =>
+                {
+                    b.HasOne("JEX.Assessment.Persistence.V1.Types.Sets.CompanySet", null)
+                        .WithMany()
                         .HasForeignKey("CompanySetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CompanySet");
-                });
-
-            modelBuilder.Entity("JEX.Assessment.Persistence.V1.Types.Sets.CompanyNameSet", b =>
-                {
-                    b.HasOne("JEX.Assessment.Persistence.V1.Types.Sets.CompanySet", "CompanySet")
-                        .WithMany("Names")
-                        .HasForeignKey("CompanySetId")
+                    b.HasOne("JEX.Assessment.Persistence.V1.Types.Sets.CompanyNameSet", null)
+                        .WithMany()
+                        .HasForeignKey("NamesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("CompanySet");
-                });
-
-            modelBuilder.Entity("JEX.Assessment.Persistence.V1.Types.Sets.CompanySet", b =>
-                {
-                    b.Navigation("Addresses");
-
-                    b.Navigation("Names");
                 });
 #pragma warning restore 612, 618
         }
