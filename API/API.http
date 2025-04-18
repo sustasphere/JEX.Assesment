@@ -1,6 +1,16 @@
 @API_HostAddress = http://localhost:5086
 
-GET {{API_HostAddress}}/api/forecast/Get
+GET {{API_HostAddress}}/api/forecast/Get/12
+Accept: application/json
+
+###
+
+GET {{API_HostAddress}}/api/company/Get/6
+Accept: application/json
+
+###
+
+GET {{API_HostAddress}}/api/vacancy/Get/3
 Accept: application/json
 
 ###
