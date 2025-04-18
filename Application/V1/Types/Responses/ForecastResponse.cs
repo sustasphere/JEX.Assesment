@@ -4,7 +4,7 @@ namespace JEX.Assessment.Application.V1.Types.Responses;
 
 public record ForecastResponse
 {
-    public required Guid CorrelationID { get; init; }
+    public Guid CorrelationID { get; init; }
     public required List<Forecast> Forecasts { get; init; }
 
     public static ForecastResponse Generate( Guid correlationId, int days )

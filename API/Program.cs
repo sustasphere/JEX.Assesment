@@ -1,3 +1,6 @@
+using JEX.Assessment.Application.V1.Behavior.Extensions;
+using JEX.Assessment.Application.V1.Behavior.Filters;
+
 namespace JEX.Assessment.API;
 
 public class Program
@@ -6,7 +9,11 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder( args );
 
-        builder.Services.AddControllers();
+        builder.Services.AddMessageHandling();
+
+        builder.Services.AddControllers( cfg => {
+            cfg.Filters.Add<CatchAllExceptionFilter>();
+        } );
 
         builder.Services.AddOpenApi();
 

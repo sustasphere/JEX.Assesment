@@ -14,4 +14,13 @@ public class Vacancy
             Title = faker.Lorem.Sentences( 1 ),
             Description = faker.Lorem.Sentences( 6 ),
         };
+
+    public static async Task<Vacancy> GenerateAsync( Faker faker, CancellationToken ct )
+    {
+        var producer = new TaskCompletionSource<Vacancy>( ct );
+
+        producer.SetResult( Generate( faker ) );
+
+        return await producer.Task;
+    }
 }

@@ -10,13 +10,13 @@
 
   <ItemGroup>
     <Folder Include="V1\Behavior\Services\" />
-    <Folder Include="V1\Types\Messages\" />
     <Folder Include="V1\Types\Requests\" />
     <Folder Include="V1\Types\Responses\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="35.6.3" />
+    <PackageReference Include="MassTransit" Version="8.4.0" />
   </ItemGroup>
 
 </Project>

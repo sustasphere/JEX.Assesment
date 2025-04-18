@@ -8,11 +8,11 @@ namespace JEX.Assessment.API.Controllers;
 public class ForecastController : ControllerBase
 {
 
-    [HttpGet( "Get/{days?}", Name = "GetWeatherForecast" )]
+    [HttpGet( "Generate/{days?}", Name = "GenerateWeatherForecast" )]
     [EndpointSummary( "Returns a weather forecast" )]
     [EndpointDescription( "Simple fixed weather forecast" )]
     [ProducesResponseType<ForecastResponse>( StatusCodes.Status200OK, "application/json" )]
-    public IActionResult Get( int days )
+    public IActionResult Generate( int days )
         => Ok(
             ForecastResponse.Generate( Guid.NewGuid(), days ) );
 }

@@ -14,4 +14,13 @@ public class Company
             Names = [ CompanyName.Generate( faker ) ],
             Addresses = [ CompanyAddress.Generate( faker ) ]
         };
+
+    public static async Task<Company> GenerateAsync( Faker faker, CancellationToken ct )
+    {
+        var producer = new TaskCompletionSource<Company>( ct );
+
+        producer.SetResult( Generate( faker ) );
+
+        return await producer.Task;
+    }
 }

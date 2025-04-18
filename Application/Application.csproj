@@ -10,8 +10,11 @@
 
   <ItemGroup>
     <Folder Include="V1\Behavior\Services\" />
-    <Folder Include="V1\Types\Messages\" />
     <Folder Include="V1\Types\Requests\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup>
