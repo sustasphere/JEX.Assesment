@@ -11,10 +11,10 @@ public class GenerateVacancyConsumer : IConsumer<GenerateVacancy>
 
     public async Task Consume( ConsumeContext<GenerateVacancy> ctx )
     {
-        List<Vacancy> vacancies = [];
+        List<VacancyEntity> vacancies = [];
         for ( int idx = 0; idx < ctx.Message.Count; idx++ )
         {
-            vacancies.Add( await Vacancy.GenerateAsync( _faker, ctx.CancellationToken ) );
+            vacancies.Add( await VacancyEntity.GenerateAsync( _faker, ctx.CancellationToken ) );
         }
 
         await ctx.RespondAsync( GeneratedVacancies.Create( ctx.Message.CorrelationId, vacancies ) );

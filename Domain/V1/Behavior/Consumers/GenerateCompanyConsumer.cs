@@ -11,10 +11,10 @@ public class GenerateCompanyConsumer : IConsumer<GenerateCompany>
 
     public async Task Consume( ConsumeContext<GenerateCompany> ctx )
     {
-        List<Company> companies = [];
+        List<CompanyEntity> companies = [];
         for ( int idx = 0; idx < ctx.Message.Count; idx++ )
         {
-            companies.Add( await Company.GenerateAsync( _faker, ctx.CancellationToken ) );
+            companies.Add( await CompanyEntity.GenerateAsync( _faker, ctx.CancellationToken ) );
         }
 
         await ctx.RespondAsync( GeneratedCompanies.Create( ctx.Message.CorrelationId, companies ) );

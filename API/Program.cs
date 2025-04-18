@@ -1,5 +1,7 @@
+using JEX.Assessment.API.Context;
 using JEX.Assessment.Application.V1.Behavior.Extensions;
 using JEX.Assessment.Application.V1.Behavior.Filters;
+using Microsoft.EntityFrameworkCore;
 
 namespace JEX.Assessment.API;
 
@@ -8,6 +10,10 @@ public class Program
     public static void Main( string [] args )
     {
         var builder = WebApplication.CreateBuilder( args );
+
+        builder.Services.AddDbContext<ApiContext>( cfg => {
+            cfg.UseSqlServer( builder.Configuration.GetConnectionString( "JexDb" )! );
+        } );
 
         builder.Services.AddMessageHandling();
 

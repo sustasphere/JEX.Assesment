@@ -5,19 +5,19 @@ using MassTransit;
 
 namespace JEX.Assessment.Application.V1.Types.Responses;
 
-public record CompanyResponse
+public record GenerateCompanyResponse
 {
     static readonly Faker _faker = new();
 
     public Guid CorrelationID { get; init; }
-    public required List<Company> Companies { get; init; }
+    public required List<CompanyEntity> Companies { get; init; }
 
-    public static CompanyResponse Generate( Guid correlationId, int count )
+    public static GenerateCompanyResponse Generate( Guid correlationId, int count )
         => new() {
             CorrelationID = correlationId,
-            Companies = [ .. Enumerable.Range( 1, count ).Select( _ => Company.Generate( _faker ) ) ]
+            Companies = [ .. Enumerable.Range( 1, count ).Select( _ => CompanyEntity.Generate( _faker ) ) ]
         };
 
-    public static CompanyResponse From( Response<GeneratedCompanies> response )
+    public static GenerateCompanyResponse From( Response<GeneratedCompanies> response )
         => new() { CorrelationID = response.Message.CorrelationId, Companies = response.Message.Companies };
 }

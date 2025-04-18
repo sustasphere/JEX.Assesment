@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <Folder Include="V1\Behavior\Services\" />
-    <Folder Include="V1\Types\Requests\" />
   </ItemGroup>
 
   <ItemGroup>

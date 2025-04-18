@@ -1,6 +1,6 @@
 namespace JEX.Assessment.Domain.V1.Types.Entities;
 
-public class Forecast
+public class ForecastEntity
 {
     static readonly Random rnd = Random.Shared;
     static readonly string [] Summaries
@@ -14,7 +14,7 @@ public class Forecast
     public required int TemperatureC { get; init; }
     public required string Summary { get; init; }
 
-    public static Forecast Generate( int day )
+    public static ForecastEntity Generate( int day )
     => new() {
         Date = DateOnly.FromDateTime( DateTime.Now.AddDays( day ) ),
         TemperatureC = rnd.Next( -20, 55 ),
