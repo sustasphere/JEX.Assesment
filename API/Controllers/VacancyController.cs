@@ -36,7 +36,7 @@ public class VacancyController( IRequestClient<GenerateVacancy> client, ApiConte
     public IActionResult GetAll( )
     {
         List<VacancyEntity> vacancies = [];
-        foreach ( var set in dbCtx.VacancySet )
+        foreach ( var set in dbCtx.Vacancies )
         {
             vacancies.Add( new VacancyEntity() {
                 VacancyId = Guid.Parse( set.VacancyGuid ?? Guid.Empty.ToString() ),

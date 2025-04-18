@@ -6,6 +6,7 @@ using JEX.Assessment.Domain.V1.Types.Messages;
 using JEX.Assessment.Persistence.V1.Types.Sets;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using static System.String;
 
 namespace JEX.Assessment.API.Controllers;
 
@@ -35,18 +36,20 @@ public class CompanyController( IRequestClient<GenerateCompany> client, ApiConte
     [ProducesResponseType<ProblemDetails>( StatusCodes.Status400BadRequest, "application/problem+json" )]
     public IActionResult GetAll( )
     {
-        var dbSet = dbCtx.CompanySet;
         List<CompanyEntity> companies = [];
-        foreach ( var set in dbSet )
+        foreach ( var set in dbCtx.Companies )
         {
-            var fullName = set.Names.Any() ? set.Names.First().FullName : string.Empty;
-            var fullAddress = set.Addresses.Any() ? set.Addresses.First().FullAddress : string.Empty;
+            var names = IsNullOrEmpty( set.Names )
+                ? [ new CompanyName { FullName = string.Empty } ]
+                : set.Names.Split( ";", StringSplitOptions.RemoveEmptyEntries ).Select( name => new CompanyName { FullName = name } );
+            var addresses = IsNullOrEmpty( set.Addresses )
+                ? [ new CompanyAddress { FullAddress = string.Empty } ]
+                : set.Names.Split( ";", StringSplitOptions.RemoveEmptyEntries ).Select( name => new CompanyAddress { FullAddress = name } );
+
             companies.Add( new CompanyEntity() {
                 CompanyId = Guid.Parse( set.CompanyGuid ?? Guid.Empty.ToString() ),
-                // ToDo: implement proper company-name mapping
-                Names = [ new() { FullName = fullName } ],
-                // ToDo: implement proper company-address mapping
-                Addresses = [ new() { FullAddress = fullAddress } ]
+                Names = names.ToList(),
+                Addresses = addresses.ToList()
             } );
         }
 
@@ -60,16 +63,14 @@ public class CompanyController( IRequestClient<GenerateCompany> client, ApiConte
     [ProducesResponseType<ProblemDetails>( StatusCodes.Status400BadRequest, "application/problem+json" )]
     public async Task<IActionResult> SaveAsync( [FromBody] SaveCompanyRequest request )
     {
-        var fullName = request.Names.Any() ? request.Names.First().FullName : string.Empty;
-        var fullAddress = request.Addresses.Any() ? request.Addresses.First().FullAddress : string.Empty;
-        var set = new CompanySet() {
+        var names = request.Names.Any() ? Join( ";", request.Names.Select( n => n.FullName ) ) : string.Empty;
+        var addresses = request.Addresses.Any() ? Join( ";", request.Addresses.Select( a => a.FullAddress ) ) : string.Empty;
+
+        dbCtx.Add( new CompanySet() {
             CompanyGuid = request.CompanyId.ToString(),
-            // ToDo: implement proper company-name mapping
-            Names = new List<CompanyNameSet> { new() { FullName = fullName } },
-            // ToDo: implement proper company-address mapping
-            Addresses = new List<CompanyAddressSet> { new() { FullAddress = fullAddress } }
-        };
-        dbCtx.Add( set );
+            Names = names,
+            Addresses = addresses
+        } );
         _ = await dbCtx.SaveChangesAsync();
         return Created();
     }

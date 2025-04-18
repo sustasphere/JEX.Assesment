@@ -2,7 +2,7 @@
 public class CompanySet
 {
     public int Id { get; set; }
-    public string CompanyGuid { get; set; } = null!;
-    public List<CompanyNameSet> Names { get; init; } = new List<CompanyNameSet>();
-    public List<CompanyAddressSet> Addresses { get; init; } = new List<CompanyAddressSet>();
+    public required string CompanyGuid { get; set; }
+    public required string Names { get; set; }
+    public required string Addresses { get; set; }
 }
