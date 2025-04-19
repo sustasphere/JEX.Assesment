@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="V1\Behavior\Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Bogus" Version="35.6.3" />
     <PackageReference Include="MassTransit" Version="8.4.0" />
   </ItemGroup>
