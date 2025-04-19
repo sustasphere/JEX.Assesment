@@ -18,7 +18,8 @@ namespace JEX.Assessment.API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CompanyGuid = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Names = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Addresses = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Addresses = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

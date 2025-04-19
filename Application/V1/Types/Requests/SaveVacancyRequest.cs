@@ -6,4 +6,5 @@ public class SaveVacancyRequest
     public Guid CompanyId { get; set; }
     public required string Title { get; set; }
     public required string Description { get; set; }
+    public bool IsActive { get; set; }
 }

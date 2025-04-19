@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JEX.Assessment.API.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20250418183907_InitialCreate")]
+    [Migration("20250419145511_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -39,6 +39,9 @@ namespace JEX.Assessment.API.Migrations
                     b.Property<string>("CompanyGuid")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Names")
                         .IsRequired()

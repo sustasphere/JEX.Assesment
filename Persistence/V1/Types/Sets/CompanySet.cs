@@ -5,4 +5,5 @@ public class CompanySet
     public required string CompanyGuid { get; set; }
     public required string Names { get; set; }
     public required string Addresses { get; set; }
+    public bool IsActive { get; set; }
 }

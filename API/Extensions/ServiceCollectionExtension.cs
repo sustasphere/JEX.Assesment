@@ -2,9 +2,8 @@
 using JEX.Assessment.Domain.V1.Behavior.Filters;
 using JEX.Assessment.Domain.V1.Types.Messages;
 using MassTransit;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace JEX.Assessment.Application.V1.Behavior.Extensions;
+namespace JEX.Assessment.API.Extensions;
 
 public static class ServiceCollectionExtension
 {

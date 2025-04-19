@@ -1,12 +1,10 @@
 using JEX.Assessment.API.Context;
+using JEX.Assessment.API.Extensions;
 using JEX.Assessment.Application.V1.Types.Requests;
 using JEX.Assessment.Application.V1.Types.Responses;
-using JEX.Assessment.Domain.V1.Types.Entities;
 using JEX.Assessment.Domain.V1.Types.Messages;
-using JEX.Assessment.Persistence.V1.Types.Sets;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
-using static System.String;
 
 namespace JEX.Assessment.API.Controllers;
 
@@ -31,30 +29,24 @@ public class CompanyController( IRequestClient<GenerateCompany> client, ApiConte
 
     [HttpGet( "GetAll", Name = "GetCompanies" )]
     [EndpointSummary( "Returns a list of companies" )]
-    [EndpointDescription( "Simple fixed company list" )]
+    [EndpointDescription( "Simple db company list" )]
     [ProducesResponseType<GetVacancyResponse>( StatusCodes.Status200OK, "application/json" )]
     [ProducesResponseType<ProblemDetails>( StatusCodes.Status400BadRequest, "application/problem+json" )]
-    public IActionResult GetAll( )
-    {
-        List<CompanyEntity> companies = [];
-        foreach ( var set in dbCtx.Companies )
-        {
-            var names = IsNullOrEmpty( set.Names )
-                ? [ new CompanyName { FullName = string.Empty } ]
-                : set.Names.Split( ";", StringSplitOptions.RemoveEmptyEntries ).Select( name => new CompanyName { FullName = name } );
-            var addresses = IsNullOrEmpty( set.Addresses )
-                ? [ new CompanyAddress { FullAddress = string.Empty } ]
-                : set.Names.Split( ";", StringSplitOptions.RemoveEmptyEntries ).Select( name => new CompanyAddress { FullAddress = name } );
+    public IActionResult GetAll( ) => Ok( new GetCompanyResponse() {
+        CorrelationID = Guid.NewGuid(),
+        Companies = dbCtx.Companies.AsCompanies()
+    } );
 
-            companies.Add( new CompanyEntity() {
-                CompanyId = Guid.Parse( set.CompanyGuid ?? Guid.Empty.ToString() ),
-                Names = names.ToList(),
-                Addresses = addresses.ToList()
-            } );
-        }
-
-        return Ok( new GetCompanyResponse() { CorrelationID = Guid.NewGuid(), Companies = companies } );
-    }
+    [HttpGet( "GetAllActive", Name = "GetActiveCompanies" )]
+    [EndpointSummary( "Returns a list of companies with at least one active vacancy" )]
+    [EndpointDescription( "Simple db company list" )]
+    [ProducesResponseType<GetVacancyResponse>( StatusCodes.Status200OK, "application/json" )]
+    [ProducesResponseType<ProblemDetails>( StatusCodes.Status400BadRequest, "application/problem+json" )]
+    public IActionResult GetAllActive( )
+        => Ok( new GetCompanyResponse() {
+            CorrelationID = Guid.NewGuid(),
+            Companies = dbCtx.Companies.AsActiveCompanies( dbCtx.Vacancies )
+        } );
 
     [HttpPost( "Save", Name = "SaveCompany" )]
     [EndpointSummary( "Saves a company" )]
@@ -63,14 +55,7 @@ public class CompanyController( IRequestClient<GenerateCompany> client, ApiConte
     [ProducesResponseType<ProblemDetails>( StatusCodes.Status400BadRequest, "application/problem+json" )]
     public async Task<IActionResult> SaveAsync( [FromBody] SaveCompanyRequest request )
     {
-        var names = request.Names.Any() ? Join( ";", request.Names.Select( n => n.FullName ) ) : string.Empty;
-        var addresses = request.Addresses.Any() ? Join( ";", request.Addresses.Select( a => a.FullAddress ) ) : string.Empty;
-
-        dbCtx.Add( new CompanySet() {
-            CompanyGuid = request.CompanyId.ToString(),
-            Names = names,
-            Addresses = addresses
-        } );
+        dbCtx.Add( request.AsCompanySet() );
         _ = await dbCtx.SaveChangesAsync();
         return Created();
     }

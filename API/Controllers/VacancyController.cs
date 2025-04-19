@@ -1,9 +1,8 @@
 using JEX.Assessment.API.Context;
+using JEX.Assessment.API.Extensions;
 using JEX.Assessment.Application.V1.Types.Requests;
 using JEX.Assessment.Application.V1.Types.Responses;
-using JEX.Assessment.Domain.V1.Types.Entities;
 using JEX.Assessment.Domain.V1.Types.Messages;
-using JEX.Assessment.Persistence.V1.Types.Sets;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,18 +34,10 @@ public class VacancyController( IRequestClient<GenerateVacancy> client, ApiConte
     [ProducesResponseType<ProblemDetails>( StatusCodes.Status400BadRequest, "application/problem+json" )]
     public IActionResult GetAll( )
     {
-        List<VacancyEntity> vacancies = [];
-        foreach ( var set in dbCtx.Vacancies )
-        {
-            vacancies.Add( new VacancyEntity() {
-                VacancyId = Guid.Parse( set.VacancyGuid ?? Guid.Empty.ToString() ),
-                CompanyId = Guid.Parse( set.CompanyGuid ?? Guid.Empty.ToString() ),
-                Title = set.Title ?? string.Empty,
-                Description = set.Description ?? string.Empty
-            } );
-        }
-
-        return Ok( new GetVacancyResponse() { CorrelationID = Guid.NewGuid(), Vacancies = vacancies } );
+        return Ok( new GetVacancyResponse() {
+            CorrelationID = Guid.NewGuid(),
+            Vacancies = dbCtx.Vacancies.AsVacancies()
+        } );
     }
 
     [HttpPost( "Save", Name = "SaveVacancy" )]
@@ -56,13 +47,7 @@ public class VacancyController( IRequestClient<GenerateVacancy> client, ApiConte
     [ProducesResponseType<ProblemDetails>( StatusCodes.Status400BadRequest, "application/problem+json" )]
     public async Task<IActionResult> SaveAsync( [FromBody] SaveVacancyRequest request )
     {
-        dbCtx.Add( new VacancySet() {
-            VacancyGuid = request.VacancyId.ToString(),
-            CompanyGuid = request.CompanyId.ToString(),
-            Title = request.Title,
-            Description = request.Description,
-            IsActive = true
-        } );
+        dbCtx.Add( request.AsVacancySet() );
         _ = await dbCtx.SaveChangesAsync();
         return Created();
     }

@@ -1,5 +1,5 @@
 using JEX.Assessment.API.Context;
-using JEX.Assessment.Application.V1.Behavior.Extensions;
+using JEX.Assessment.API.Extensions;
 using JEX.Assessment.Application.V1.Behavior.Filters;
 using Microsoft.EntityFrameworkCore;
 
